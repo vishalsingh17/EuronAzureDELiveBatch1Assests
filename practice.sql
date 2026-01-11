@@ -150,3 +150,120 @@ select countrycode, sum(Population) as sum_pop from city group by countrycode ha
 select countrycode, sum(Population) as sum_pop from city group by countrycode;
 
 select countrycode, sum(Population) as sum_pop from city group by countrycode order by sum_pop desc limit 10;
+
+-- create database
+create database fintech_db;
+
+-- create database which allows to store emojis, symbols and multilingual data
+create database chat_db 
+character set utf8mb4
+collate utf8mb4_unicode_ci;
+
+use fintech_db;
+
+-- create user table
+create table users (
+    user_id INT,
+    name varchar(100),
+    email varchar(100)
+);
+
+-- know about table schema
+desc users;
+
+insert into users values (NULL, "Vishal", NULL);
+
+insert into users values (100, "Vishal", "A@casda.com");
+
+
+select * from users;
+
+-- create table (prod grade)
+create table users_prod (
+	user_id INT auto_increment,
+    name varchar(100) NOT NULL,
+    email varchar(100) unique,
+    created_at timestamp default current_timestamp,
+    primary key (user_id)
+);
+
+desc users_prod;
+
+insert into users_prod(name, email) values ("Vishal", "vishal@gmail.com");
+
+select * from users_prod;
+
+insert into users_prod(name, email) values ("Raman", "raman@gmail.com");
+
+insert into users_prod(name, email) values ("Raman Verma", "ramanv@gmail.com");
+
+insert into users_prod(user_id, name, email) values (10, "Anikt", "ankit@gmail.com");
+
+insert into users_prod(name, email) values ("Amit", "amit@gmail.com");
+
+create table orders (
+	order_id INT auto_increment primary key, 
+    user_id INT NOT NULL, 
+    amount decimal(10,2) check (amount > 0), 
+    order_date timestamp default current_timestamp,
+    foreign key (user_id) references users_prod(user_id)
+);
+
+desc orders;
+
+insert into orders(user_id, amount) values (1, 200.50), (2, 500);
+
+select * from orders;
+
+insert into orders(user_id, amount) values (1, 250), (2, 1);
+
+-- alter commands (use with caution)
+alter table users 
+add column phone varchar(10);
+
+desc users;
+
+select * from users;
+
+insert into users values (101, "Vishal", "A@casda.com", 9876543872);
+
+alter table users_prod
+add column phone varchar(10) not null;
+
+desc users_prod;
+
+insert into users_prod(name, email, phone) values ("Divya", "divya@gmail.com", 9876543210);
+
+select * from users_prod;
+
+alter table users_prod
+rename column phone to mobile_no;
+
+alter table users_prod
+modify column mobile_no varchar(15) not null;
+
+desc users_prod;
+
+-- drop column
+alter table users_prod
+drop column mobile_no;
+
+-- rename table
+rename table users to users_testing;
+
+show tables;
+
+-- truncate table
+truncate table users_testing;
+
+select * from users_testing;
+
+desc users_testing;
+
+-- drop table
+drop table users_testing;
+
+desc users_testing;
+
+-- drop database
+drop database chat_db;
