@@ -267,3 +267,140 @@ desc users_testing;
 
 -- drop database
 drop database chat_db;
+
+
+-- DML Commands
+use fintech_db;
+
+select * from users_prod;
+
+desc users_prod;
+
+insert into users_prod(name, email) values ("Ketan", "ketan@gmail.com");
+
+insert into users_prod(name, email) values ("Ketan", "ketan@gmail.com"), ("Ketan1", "ketan1@gmail.com"), ("Ketan2", "ketan2@gmail.com");
+
+insert into users_prod(name, email) values ("ketan@gmail.com", "ketan");
+
+alter table users_prod 
+add column active int default 1;
+
+insert into users_prod(name, email, active) values ("Bharathi", "Bharathi@gmail.com", 0);
+
+insert into users_prod(name, email, active) values ("Bharathi", "Bharathi1@gmail.com", "inactive");
+
+insert into users_prod(name, email) values ("xyz", NULL);
+
+insert into users_prod(name) values ("abc");
+
+insert into users_prod() values ();
+
+create table students (id int, name varchar(50), marks int, course varchar(50));
+
+insert into students() values ();
+
+select * from students;
+
+INSERT INTO students (id, name, marks, course)
+VALUES
+(1, 'Amit Sharma', 85, 'MBA'),
+(2, 'Neha Verma', 78, 'BBA'),
+(3, 'Rahul Mehta', 92, 'MBA'),
+(4, 'Priya Singh', 88, 'BCom'),
+(5, 'Karan Malhotra', 67, 'BCA'),
+(6, 'Sneha Kapoor', 74, 'MBA'),
+(7, 'Vikram Rao', 81, 'BTech'),
+(8, 'Ananya Iyer', 90, 'MBA'),
+(9, 'Rohit Gupta', 59, 'BBA'),
+(10, 'Pooja Nair', 95, 'MBA');
+
+create table students_copy (id int, name varchar(50), marks int, course varchar(50));
+
+select * from students_copy;
+
+insert into students_copy(id, name, marks, course) select id, name, marks, course from students;
+
+create table students_copy1 (name varchar(50), marks int);
+
+insert into students_copy1 select name, marks from students;
+
+select * from students_copy1;
+
+create table students_copy2 (id int, name varchar(50), marks int, email varchar(50));
+
+insert into students_copy2 (id, name, marks, email) select id, name, marks, NULL from students;
+
+select * from students_copy2;
+
+create table students_copy_mba (id int, name varchar(50), marks int, course varchar(50));
+
+insert into students_copy_mba select id, name, marks, course from students where course = "MBA";
+
+select * from students_copy_mba;
+                             
+-- update command
+update students_copy2 set email = "students@xyz.com";
+
+select * from students_copy2;
+
+update students_copy2 set email = "amit@xyz.com";
+
+update students_copy2 set email = "Neha@xyz.com" where id = 2;
+
+insert into students_copy2 values (11, "Rohit Gupta", 86, "amit@xyz.com");
+
+update students_copy2 set email = "Rohit@xyz.com" where name = "Rohit Gupta";
+
+update students_copy2 set email = "Vikram@xyz.com", marks = 85 where id = 7;
+
+-- delete command
+-- delete from tbl_name where condition;
+
+delete from students_copy2 where id = 10;
+
+delete from students_copy2 where marks > 85;
+
+truncate students_copy2;
+
+drop table students_copy2;
+
+use world;
+
+select * from city;
+
+select * from city where CountryCode = "AFG";
+
+select * from city where lower(CountryCode) = "afg";
+
+select * from city where Population >= 1000000;
+
+select * from city where Population <= 1000000;
+
+select * from city where CountryCode <> "AFG";
+
+select * from city;
+select * from city where CountryCode = "ARG";
+
+select * from city where CountryCode = "ARG" and Population > 1000000;
+
+select * from city where CountryCode = "ARG" or Population > 1000000;
+
+select * from city;
+
+select * from city where CountryCode <> "ARG"; 
+
+select count(*) from city where CountryCode <> "ARG" order by ID; 
+
+select * from city where Population between 1500000 and 3500000;
+
+select * from city where Population >= 1500000 and Population <= 3500000;
+
+select * from city where Population > 1499999 and Population < 3500001;
+
+select * from city;
+
+select * from city where CountryCode in ("AFG", "NLD", "ARG");
+
+select * from city where countrycode="AFG" or countrycode="NLD" or countrycode="ARG";
+
+select * from city where CountryCode not in ("AFG", "NLD", "ARG");
