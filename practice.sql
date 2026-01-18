@@ -404,3 +404,92 @@ select * from city where CountryCode in ("AFG", "NLD", "ARG");
 select * from city where countrycode="AFG" or countrycode="NLD" or countrycode="ARG";
 
 select * from city where CountryCode not in ("AFG", "NLD", "ARG");
+
+-- city names which starts with "A"
+select * from city where name like "A%";
+
+-- city names which ends with "m"
+select * from city where name like '%m';
+
+-- city names which contains "dam"
+select * from city where name like '%dam%';
+
+-- city names having exactly 4 letters
+select * from city where name like '____';
+
+-- cities in country "NLD" which starts with "R"
+select * from city where countrycode = "NLD" and name like "R%";
+
+-- cities having "i" at the 3rd spot
+select * from city where name like "__i%";
+
+-- Cities not ending with "a"
+select * from city where name not like "%A";
+select * from city where name not like "%a";
+
+use eurondb;
+show tables;
+
+create table customers (
+  id int primary key,
+  first_name varchar(50),
+  country varchar(50),
+  score int
+);
+
+create table orders(
+order_id int primary key,
+order_date date,
+sales int,
+customer_id int
+);
+
+INSERT INTO customers VALUES
+(1, 'Maria',  'Germany', 350),
+(2, 'John',   'USA',     900),
+(3, 'Georg',  'USA',     750),
+(4, 'Martin', 'Germany', 500),
+(5, 'Peter',  'USA',     0);
+
+
+INSERT INTO orders VALUES
+(1001, '2021-01-11', 35, 1),
+(1002, '2021-04-05', 15, 2),
+(1003, '2021-06-18', 20, 3),
+(1004, '2021-08-31', 10, 6);
+
+-- no join
+select * from customers;
+
+select * from orders;
+
+alter table orders add column id int; 
+
+-- inner join
+select customers.id, customers.first_name, orders.order_id, orders.sales
+from customers
+inner join orders
+on customers.id = orders.customer_id;
+
+
+select c.id, c.first_name, o.order_id, o.sales
+from customers as c
+inner join orders as o
+on c.id = o.customer_id;
+
+
+select c.id, c.first_name, o.order_id, o.sales
+from orders as o
+inner join customers as c
+on o.customer_id = c.id;
+
+-- left join (order of joining tables matters)
+select c.id, c.first_name, o.order_id, o.sales
+from orders as o
+left join customers as c
+on o.customer_id = c.id;
+
+select c.id, o.order_id, o.sales
+from customers as c
+left join orders as o
+on c.id = o.customer_id;
