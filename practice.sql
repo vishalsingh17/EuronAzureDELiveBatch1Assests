@@ -493,3 +493,238 @@ select c.id, o.order_id, o.sales
 from customers as c
 left join orders as o
 on c.id = o.customer_id;
+
+select * from customers;
+
+select * from orders; 
+
+select c.id, c.first_name, o.sales, o.order_id
+from customers c
+right join orders o
+on c.id = o.customer_id;
+
+select c.id, c.first_name, o.sales, o.order_id
+from orders o
+left join customers c
+on c.id = o.customer_id;
+
+select c.id, c.first_name, o.orders, o.order_id
+from customers c
+full join orders o
+on c.id = o.customer_id;
+
+select c.id, c.first_name, o.customer_id, o.sales, o.order_id
+from orders o
+left join customers c
+on c.id = o.customer_id
+where c.id is null;
+
+select c.id, c.first_name, o.customer_id, o.sales, o.order_id
+from customers c
+left join orders o
+on c.id = o.customer_id
+where o.customer_id is null;
+
+select c.id, c.first_name, o.customer_id, o.sales, o.order_id
+from customers c
+right join orders o
+on c.id = o.customer_id
+where c.id is null;
+
+select c.id, c.first_name, o.customer_id, o.sales, o.order_id
+from orders o
+left join customers c
+on o.customer_id = c.id
+where c.id is null;
+
+select c.id, c.first_name, o.customer_id, o.sales, o.order_id
+from customers c
+full join orders o
+on c.id = o.customer_id
+where c.id is null or o.customer_id is null;
+
+select * from customers cross join orders;
+
+create database salesDB;
+
+use salesDB;
+
+-- create a customer table having customer_id (PK), customer_name, email
+create table customers (
+	customer_id int primary key auto_increment,
+    customer_name varchar(100) not null,
+    email varchar(100)
+);
+
+create table products (
+	product_id int primary key auto_increment,
+    product_name varchar(100) not null,
+    price decimal(10,2) not null
+);
+
+create table employees (
+	employee_id int primary key auto_increment,
+    employee_name varchar(100) not null,
+    department varchar(100)
+);
+
+-- 
+-- create table orders
+create table orders (
+	order_id int primary key auto_increment,
+    customer_id int,
+    product_id int,
+    employee_id int,
+    quantity int,
+    sales_amount decimal(10,2),
+    order_date date,
+    
+    foreign key (customer_id) references customers(customer_id),
+    foreign key (product_id) references products(product_id),
+    foreign key (employee_id) references employees(employee_id)
+);
+
+desc orders;
+
+INSERT INTO Customers (customer_name, email) VALUES
+('Karan Malhotra', 'karan@gmail.com'),
+('Sneha Iyer', 'sneha@gmail.com'),
+('Ritika Jain', 'ritika@gmail.com'),
+('Anuj Khanna', 'anuj@gmail.com'),
+('Pooja Nair', 'pooja@gmail.com'),
+('Suresh Yadav', 'suresh@gmail.com'),
+('Nikita Bose', 'nikita@gmail.com');
+
+INSERT INTO Products (product_name, price) VALUES
+('Tablet', 35000.00),
+('Smartwatch', 12000.00),
+('Bluetooth Speaker', 5500.00),
+('Power Bank', 2000.00),
+('Gaming Mouse', 2500.00),
+('Keyboard', 1800.00),
+('Monitor', 15000.00);
+
+INSERT INTO Employees (employee_name, department) VALUES
+('Aakash Verma', 'Sales'),
+('Simran Kaur', 'Sales'),
+('Deepak Joshi', 'Sales'),
+('Ritu Saxena', 'Sales'),
+('Manoj Kumar', 'Support'),
+('Alok Mishra', 'Sales');
+
+INSERT INTO Orders
+(customer_id, product_id, employee_id, quantity, sales_amount, order_date)
+VALUES
+
+(4, 4, 4, 1, 35000.00, '2026-01-20'),
+(5, 5, 5, 2, 24000.00, '2026-01-21'),
+(6, 6, 6, 1, 5500.00, '2026-01-22'),
+(7, 7, 7, 3, 6000.00, '2026-01-23'),
+(8, 8, 8, 1, 2500.00, '2026-01-24'),
+
+(9, 9, 9, 2, 30000.00, '2026-01-25'),
+(10, 10, 10, 1, 15000.00, '2026-01-26'),
+(2, 4, 6, 1, 35000.00, '2026-02-01'),
+(3, 5, 7, 1, 12000.00, '2026-02-03'),
+(1, 6, 8, 2, 11000.00, '2026-02-05'),
+
+(5, 1, 9, 1, 60000.00, '2026-02-06'),
+(6, 2, 10, 1, 25000.00, '2026-02-08'),
+(7, 3, 4, 2, 6000.00, '2026-02-10'),
+(8, 7, 5, 1, 15000.00, '2026-02-12'),
+(9, 8, 6, 1, 12000.00, '2026-02-15'),
+
+(10, 9, 7, 3, 90000.00, '2026-02-18'),
+(4, 10, 8, 2, 30000.00, '2026-02-20'),
+(3, 1, 9, 1, 60000.00, '2026-02-22'),
+(2, 5, 10, 2, 24000.00, '2026-02-25'),
+(1, 4, 6, 1, 35000.00, '2026-02-28');
+
+drop table orders;
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    product_id INT,
+    employee_id INT,
+    quantity INT,
+    sales_amount DECIMAL(10,2),
+    order_date DATE,
+
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+);
+
+INSERT INTO Orders
+(customer_id, product_id, employee_id, quantity, sales_amount, order_date)
+VALUES
+
+(4, 4, 4, 1, 2000.00, '2026-01-20'),
+(5, 5, 5, 2, 5000.00, '2026-01-21'),
+(6, 6, 6, 1, 1800.00, '2026-01-22'),
+(7, 7, 1, 1, 15000.00, '2026-01-23'),
+
+(2, 3, 2, 1, 5500.00, '2026-01-25'),
+(3, 2, 3, 1, 12000.00, '2026-02-01'),
+(1, 1, 4, 2, 70000.00, '2026-02-05'),
+
+(5, 1, 5, 1, 35000.00, '2026-02-08'),
+(6, 4, 6, 2, 4000.00, '2026-02-10'),
+(7, 5, 1, 1, 2500.00, '2026-02-12');
+
+-- retrive all orders with customers, product and employee details
+select 
+	o.order_id,
+	c.customer_name,
+	p.product_name,
+	o.sales_amount,
+	p.price
+from orders o
+inner join customers c on o.customer_id = c.customer_id
+inner join products p on o.product_id = p.product_id;
+
+select 
+	o.order_id,
+	c.customer_name,
+	p.product_name,
+	o.sales_amount,
+	p.price,
+    e.employee_name
+from orders o
+inner join customers c on o.customer_id = c.customer_id
+inner join products p on o.product_id = p.product_id
+inner join employees e on o.employee_id = e.employee_id;
+
+-- revenue per salesperson
+SELECT 
+    e.employee_name as Salesperson,
+    SUM(o.sales_amount) AS revenue
+FROM 
+    orders o
+INNER JOIN 
+    employees e ON o.employee_id = e.employee_id
+GROUP BY 
+    e.employee_name
+ORDER BY 
+    revenue DESC;
+
+-- top selling(most revenue) products
+SELECT 
+    p.product_name,
+    SUM(o.sales_amount) AS total_sales
+FROM orders o
+JOIN products p 
+    ON o.product_id = p.product_id
+GROUP BY p.product_id, p.product_name
+ORDER BY total_sales DESC;
+
+-- total orders, total customers, total revenue, avg order value, total units sold
+
+select 
+    count(distinct order_id) as total_orders,
+    count(distinct customer_id) as total_customers,
+    sum(sales_amount) as total_revenue,
+    avg(sales_amount) as avg_order_value,
+    sum(quantity) as total_units_sold
+from orders;
