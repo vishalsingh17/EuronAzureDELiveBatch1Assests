@@ -728,3 +728,71 @@ select
     avg(sales_amount) as avg_order_value,
     sum(quantity) as total_units_sold
 from orders;
+
+select * from customers;
+
+select * from employees;
+
+-- select customer_name as all_names from customers
+-- union
+-- select employee_name from employees;
+
+select customer_id as id, customer_name as name from customers
+union
+select employee_id, employee_name from employees;
+
+select employee_id from employees
+union
+select customer_name from customers;
+
+select employee_id from employees
+union
+select customer_name from customers;
+
+select * from customers;
+
+select * from orders;
+
+select sales_amount, customer_id from orders
+union
+select customer_id, customer_name from customers;
+
+select customer_id, sales_amount from orders
+union 
+select customer_id, customer_name from customers
+order by customer_id;
+
+select customer_name as all_names, customer_id as all_id from customers
+union
+select employee_name, employee_id as all_id from employees;
+
+select customer_name from customers
+union
+select employee_name as all_names from employees;
+
+desc employees;
+
+insert into employees(employee_name, department) values ("Karan Malhotra", "Support");
+
+select * from employees;
+
+select customer_name as all_names from customers
+union
+select employee_name from employees;
+
+select customer_name as all_names from customers
+union all
+select employee_name from employees;
+
+-- find employees who are not customers
+select employee_name from employees
+except
+select customer_name from customers;
+
+select employee_id, employee_name from employees;
+except
+select customer_id ,customer_name from customers;
+
+select employee_name from employees;
+INTERSECT
+select customer_name from customers;
