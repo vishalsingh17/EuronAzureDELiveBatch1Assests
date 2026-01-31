@@ -796,3 +796,65 @@ select customer_id ,customer_name from customers;
 select employee_name from employees;
 INTERSECT
 select customer_name from customers;
+
+-- concat/concatenation
+select id, first_name from customers;
+
+select id, first_name, concat(id, "-" ,first_name) as "id-name" from customers;
+
+-- upper (Maria -> MARIA)
+select id, upper(first_name) from customers;
+
+-- lower (Maria -> maria)
+select id, lower(first_name) from customers;
+
+-- trim
+select trim(first_name) from customers;
+
+-- find customers whose names doesn't contain leading or trailing spaces
+select * from customers where first_name = trim(first_name);
+
+-- find customers whose names contains leading or trailing spaces
+select * from customers where first_name != trim(first_name);
+
+-- update id = 1 as "  Maria"
+update customers set first_name = "  Maria" where id = 1;
+
+-- replace
+select "31-01-26" as date;
+
+select "31-01-26" as date, replace("31-01-26", "-", "/") as new_date;
+
+select order_date from orders;
+
+select order_date, replace(order_date, "-", "/") as new_date from orders;
+
+select "981-743-3432" as ph_no;
+-- 9817433432
+select "981-743-3432" as ph_no, replace("981-743-3432", "-", "");
+
+select "reports.xls", replace("reports.xls", ".xls", ".csv");
+
+select first_name, length(first_name) from customers;
+
+-- find customers whose names contains leading or trailing spaces
+select * from customers where length(first_name) <> length(trim(first_name));
+
+
+select first_name, length(first_name), length(trim(first_name)) from customers;
+
+select first_name, left(first_name, 3) from customers;
+
+select first_name, right(first_name, 2) from customers;
+
+-- substring(value/col, start_index, length) 
+select first_name, substring(first_name, 2, 3) from customers;
+
+-- give me everything after 3rd index from first_name col
+select first_name, substring(first_name, 4, length(first_name)) from customers;
+
+select first_name, substring(first_name, 4) from customers;
+
+select 3.516, round(3.516,2), round(3.516,1), round(3.416,0);
+
+select 10, abs(10), abs(-10);
