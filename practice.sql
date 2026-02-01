@@ -858,3 +858,133 @@ select first_name, substring(first_name, 4) from customers;
 select 3.516, round(3.516,2), round(3.516,1), round(3.416,0);
 
 select 10, abs(10), abs(-10);
+
+
+select * from orders;
+
+-- UTC zones
+select order_date, "2026-02-03" as "static date", current_date() as today, current_time() as cur_time, current_timestamp() as date_time from orders;
+
+-- who can i get timezone explicitly
+
+
+-- datetime extraction
+select current_timestamp();
+
+select now();
+
+-- extract date 
+select day(now());
+
+select order_date, day(order_date) from orders;
+
+-- extract month
+select month(now());
+
+select order_date, month(order_date) from orders;
+
+-- extract year
+select year(now());
+
+select year(order_date) from orders;
+
+select dayname(now());
+
+select order_date, dayname(order_date) from orders;
+
+select monthname(now());
+
+select order_date, monthname(order_date) from orders;
+
+select weekday(now());
+
+select weekday("2026-01-02");
+
+select week("2026-01-02");
+
+-- 2026-02-01
+select dayofmonth(now());
+
+select dayofmonth("2026-01-02");
+
+select extract(month from now()) as month;
+
+select extract(day from now()) as today;
+
+select extract(year from now()) as year;
+
+select date_format(now(), "%M");
+
+select date_format(now(), "%m");
+
+select date_format(now(), "%Y-%m");
+
+select date_format(now(), "%Y-%M");
+
+select date_format(now(), "%Y-%m-%d");
+
+select last_day(now());
+
+select last_day("2026-01-01");
+
+select * from orders;
+
+-- no the orders placed in each year
+select count(*), year(order_date) from orders group by year(order_date);
+
+-- no the orders placed in each month
+SELECT 
+    MONTH(order_date) AS order_month,
+    COUNT(*) AS total_orders
+FROM orders
+GROUP BY MONTH(order_date)
+ORDER BY order_month;
+
+-- details of order placed in "April"
+select * from orders where monthname(order_date) = "April";
+
+-- this query is more optimized
+select * from orders where month(order_date) = 4;
+
+-- dateadd(), datediff()
+select date_add("2025-08-20", interval 3 year);
+
+select date_add("2025-08-20", interval 2 month);
+
+select date_add(now(), interval 2 day);
+
+select day(now());
+
+select 2+null;
+
+select date_add(now(), interval 5 hour);
+
+select day(date_add(now(), interval 2 day));
+
+-- 1 year 2 months
+select date_add(now(), interval '1-2' year_month);
+
+-- 2 days 5 hr 30 min 
+select date_add(now(), interval '2 05:30:00' day_second);
+
+select date_add(now(), interval -3 day);
+
+select date_add(now(), interval -2 year);
+
+select date_sub(now(), interval 2 year);
+
+-- datediff
+select datediff("2026-02-10", "2026-02-01");
+
+select datediff("2024-02-01", "2026-02-01");
+
+select datediff("2026-12-31", now());
+
+select * from orders;
+
+-- no of days since the user ordered something
+select customer_id, datediff(now(), order_date) as order_diff from orders where datediff(now(), order_date) > 30;
+
+select * from orders;
+
+select sales as sales_data from orders having sales_data > 30;
