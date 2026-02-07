@@ -988,3 +988,84 @@ select customer_id, datediff(now(), order_date) as order_diff from orders where 
 select * from orders;
 
 select sales as sales_data from orders having sales_data > 30;
+
+CREATE TABLE win_sales (
+    order_id INT PRIMARY KEY,
+    order_date DATE,
+    customer_id INT,
+    city VARCHAR(50),
+    sales_amount DECIMAL(10,2)
+);
+
+INSERT INTO win_sales VALUES
+(101, '2026-01-01', 1, 'Delhi',   1200.00),
+(102, '2026-01-02', 2, 'Mumbai',  1500.00),
+(103, '2026-01-03', 1, 'Delhi',    800.00),
+(104, '2026-01-04', 3, 'Bangalore',2000.00),
+(105, '2026-01-05', 2, 'Mumbai',  1700.00),
+(106, '2026-01-06', 1, 'Delhi',   2200.00),
+(107, '2026-01-07', 3, 'Bangalore',1300.00),
+(108, '2026-01-08', 4, 'Pune',     900.00),
+(109, '2026-01-09', 2, 'Mumbai',  2500.00),
+(110, '2026-01-10', 4, 'Pune',    1600.00);
+insert into win_sales values(111, '2026-01-11', 5, 'Delhi', 1000);
+
+select * from win_sales;
+
+-- find total sales done
+select sum(sales_amount) as totalSales from win_sales;
+
+-- find total sales of each customer
+select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id;
+
+-- find total sales of each customer along with their order id
+select customer_id, order_id, sum(sales_amount) as totalSales from win_sales group by customer_id;
+
+select customer_id, order_id, sum(sales_amount) as totalSales from win_sales group by customer_id, order_id;
+
+-- use window functions
+select order_id ,sum(sales_amount) over() as totalSales from win_sales;
+
+select customer_id, sum(sales_amount) over(partition by customer_id) as totalSalesPerCust from win_sales;
+
+-- find total sales of each customer along with their order id
+select customer_id, order_id, sum(sales_amount) over(partition by customer_id) as totalSalesPerCust from win_sales;
+
+select * from win_sales;
+
+select customer_id, order_id, order_date, sum(sales_amount) over() as totalSales from win_sales;
+
+select customer_id, order_id, order_date, city, sum(sales_amount) over(partition by city) as totalSalesCity from win_sales;
+
+select customer_id, order_id, order_date, city, sum(sales_amount) over(partition by city) as totalSalesCity,
+sum(sales_amount) over(partition by city, customer_id) as totalSalesByCityCust
+from win_sales;
+
+select * from win_sales order by sales_amount desc;
+
+-- order by clause
+select customer_id, order_id, sales_amount, rank() over (order by sales_amount desc) as rk from win_sales;
+
+select customer_id, order_id, sales_amount, rank() over (partition by customer_id order by sales_amount desc) as rk from win_sales;
+
+-- rank the sales amount based on city
+select customer_id, order_id, sales_amount, city, rank() over (partition by city order by sales_amount desc) as rk from win_sales;
+
+select customer_id, order_id, sales_amount, city, 
+rank() over (partition by city order by sales_amount desc) as rk from win_sales order by city desc;
+
+select customer_id, order_id, sales_amount, city, 
+rank() over (partition by city order by sales_amount desc) as rk from win_sales order by city desc;
+
+-- Frame clause
+select city, order_id, sales_amount, sum(sales_amount) 
+over (order by sales_amount rows between current row and 2 following) as frameSales from win_sales;
+
+select city, order_id, sales_amount, sum(sales_amount) 
+over (partition by city order by sales_amount rows between current row and 1 following) as frameSales from win_sales;
+
+select city, order_id, sales_amount, sum(sales_amount) 
+over (partition by city order by sales_amount rows between unbounded preceding and 1 following) as frameSales from win_sales;
+
+select city, order_id, sales_amount, sum(sales_amount) 
+over (partition by city order by sales_amount rows between 1 preceding and 1 following) as frameSales from win_sales;
