@@ -1069,3 +1069,99 @@ over (partition by city order by sales_amount rows between unbounded preceding a
 
 select city, order_id, sales_amount, sum(sales_amount) 
 over (partition by city order by sales_amount rows between 1 preceding and 1 following) as frameSales from win_sales;
+
+select customer_id, sales_amount from win_sales where sales_amount > 1000;
+
+-- find customer id having sales amount greater than the avg of all sales amount
+
+select avg(sales_amount) from win_sales;
+
+select distinct customer_id, sales_amount from win_sales where sales_amount > 1518.181818;
+
+select customer_id, sales_amount from 
+(select customer_id, sales_amount, avg(sales_amount) over() as avgPrice from win_sales) as avgPriceTable 
+where sales_amount > avgPrice;
+
+select customer_id, sales_amount from win_sales where sales_amount > (select avg(sales_amount) from win_sales);
+
+-- rank customers based on total amount of sales
+select * from win_sales;
+
+select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id;
+
+select *, rank() over(order by totalSales desc) as custRank from 
+(select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id) as custResult;
+
+-- show customer_id, sales_amount, order_id, total orders
+
+select count(*) from win_sales;
+
+select customer_id, order_id, sales_amount, (select count(*) from win_sales) as totalOrder from win_sales;
+
+-- show all customers details and find the total orders of each customer
+select * from win_sales;
+
+select customer_id , count(*) as totalOrders from win_sales group by customer_id;
+
+select * from win_sales s1
+left join 
+(select customer_id , count(*) as totalOrders from win_sales group by customer_id) s2
+on s1.customer_id = s2.customer_id; 
+
+select s1.*, s2.totalOrders from win_sales s1
+left join 
+(select customer_id , count(*) as totalOrders from win_sales group by customer_id) s2
+on s1.customer_id = s2.customer_id; 
+
+select customer_id, sales_amount from win_sales where sales_amount > (select avg(sales_amount) from win_sales);
+
+select customer_id, sales_amount from win_sales where sales_amount = (select avg(sales_amount) from win_sales);
+
+select * from win_sales;
+
+select * from customers;
+
+-- which customer belong to delhi
+select customer_id from customers where city = "Delhi";
+
+-- give me all the order details of customers from delhi
+select * from win_sales where customer_id in 
+(select customer_id from customers where city = "Delhi");
+
+-- give me all the order details of customers from delhi and pune
+select * from win_sales where customer_id in 
+(select customer_id from customers where city in ("Delhi", "Pune"));
+
+-- give me all the order details of all customers apart from delhi
+select * from win_sales where customer_id in 
+(select customer_id from customers where city != "Delhi");
+
+select * from win_sales;
+
+select * from customers;
+
+-- find orders whose amount is greater than any mumbai order
+select * from win_sales 
+where sales_amount > any(
+		select sales_amount from win_sales s
+        inner join customers c
+        on s.customer_id = c.customer_id
+        where c.city = "Mumbai"
+        );
+        
+-- find order whose amount is greater than all pune order
+
+select * from win_sales 
+where sales_amount > all(
+		select sales_amount from win_sales s
+        inner join customers c
+        on s.customer_id = c.customer_id
+        where c.city = "Pune"
+        );
+        
+-- non co related subquery
+select *, (select count(*) from win_sales) as totalSales from customers;
+
+-- co related subquery
+select *, (select count(*) from win_sales s where s.customer_id = c.customer_id) as totalSales from customers c; 
+
