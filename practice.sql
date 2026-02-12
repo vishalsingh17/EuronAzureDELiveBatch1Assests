@@ -1165,3 +1165,127 @@ select *, (select count(*) from win_sales) as totalSales from customers;
 -- co related subquery
 select *, (select count(*) from win_sales s where s.customer_id = c.customer_id) as totalSales from customers c; 
 
+-- CTEs
+select * from win_sales;
+
+-- step1: total sales per customer
+select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id;
+
+-- step2: Convert to CTE
+-- CTE query
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+-- main query
+select * from cte_total_sales;
+
+-- step3: Use CTE
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+select c.customer_id, c.customer_name, c.city, cts.totalSales from customers c
+left join CTE_total_sales cts
+on cts.customer_id = c.customer_id;
+
+-- order by in not guranteed inside CTE, always use order by outside the cte
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+select c.customer_id, c.customer_name, c.city, cts.totalSales from customers c
+left join CTE_total_sales cts
+on cts.customer_id = c.customer_id
+order by customer_id desc;
+
+-- calculating highest sale per customer along with their last order
+-- step1: total sales
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+-- step2: find the last order date of each customer
+, CTE_last_order as 
+( select customer_id, max(order_date) as lastOrder from win_sales group by customer_id)
+-- main query
+select c.customer_id, c.customer_name, c.city, cts.totalSales, clo.lastOrder
+from customers c
+left join CTE_total_sales cts
+on cts.customer_id = c.customer_id
+left join CTE_last_order clo
+on clo.customer_id = c.customer_id;
+
+
+
+-- step1: total sales
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+
+-- step2: find the last order date of each customer
+, CTE_last_order as 
+( select customer_id, max(order_date) as lastOrder from win_sales group by customer_id)
+
+-- step3: rank customers based on the total sales per customers
+, CTE_rank_total_sales as
+( select customer_id, totalSales, rank() over (order by totalSales desc) as customerRank from CTE_total_sales)
+
+-- main query
+select c.customer_id, c.customer_name, c.city, cts.totalSales, clo.lastOrder, crts.customerRank
+from customers c
+left join CTE_total_sales cts
+on cts.customer_id = c.customer_id
+left join CTE_last_order clo
+on clo.customer_id = c.customer_id
+left join CTE_rank_total_sales crts
+on crts.customer_id = c.customer_id
+order by crts.customerRank;
+
+
+-- step1: total sales
+with CTE_total_sales as (select customer_id, sum(sales_amount) as totalSales from win_sales group by customer_id)
+
+-- step2: find the last order date of each customer
+, CTE_last_order as 
+( select customer_id, max(order_date) as lastOrder from win_sales group by customer_id)
+
+-- step3: rank customers based on the total sales per customers
+, CTE_rank_total_sales as
+( select customer_id, totalSales, rank() over (order by totalSales desc) as customerRank from CTE_total_sales)
+
+-- step4: segment customers if totalsales > 5000 -> high, totalSales > 3000 -> Medium else low
+, CTE_customer_segment as
+( select customer_id,
+     case
+        when totalSales > 6000 then "High"
+        when totalSales > 4000 then "Medium"
+        else "Low"
+	end as customerSegment
+   from CTE_total_sales   
+)
+-- main query
+select c.customer_id, c.customer_name, c.city, cts.totalSales, clo.lastOrder, crts.customerRank, ccs.customerSegment
+from customers c
+left join CTE_total_sales cts
+on cts.customer_id = c.customer_id
+left join CTE_last_order clo
+on clo.customer_id = c.customer_id
+left join CTE_rank_total_sales crts
+on crts.customer_id = c.customer_id
+left join CTE_customer_segment ccs
+on ccs.customer_id = c.customer_id;
+
+-- generate numbers from 1 to 20
+ with recursive numbers as (
+   -- anchor query
+	select 1 as num
+    union all
+    -- recursive query
+    select num + 1 from numbers where num < 20
+)
+-- main query
+select * from numbers;
+   
+   
+select * from employees;
+
+with recursive emp_hierarchy as 
+(
+  -- CEO
+  select emp_id, emp_name, manager_id, department, salary, 1 as level
+  from employees
+  where manager_id is null
+  -- recursive query
+  union all
+  select e.emp_id, e.emp_name, e.manager_id, e.department, e.salary, eh.level+1 as level from employees e
+  join emp_hierarchy eh
+  on e.manager_id = eh.emp_id
+)
+select emp_id, emp_name, department, salary, level from emp_hierarchy order by level, emp_id;
